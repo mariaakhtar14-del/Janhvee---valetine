@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>For Janhvee 💕</title>
+
+<style>
+    body {
+        text-align: center;
+        background: linear-gradient(to bottom right, #ffd6e8, #fff0f5);
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+    }
+
+    h1 {
+        color: #d63384;
+        margin-top: 20px;
+    }
+
+    #puzzle {
+        width: 300px;
+        height: 300px;
+        margin: 20px auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+    }
+
+    .piece {
+        width: 100px;
+        height: 100px;
+        background-image: url('https://picsum.photos/300'); 
+        background-size: 300px 300px;
+        cursor: pointer;
+        border: 2px solid white;
+        transition: transform 0.2s;
+    }
+
+    .piece:hover {
+        transform: scale(1.05);
+    }
+
+    #message {
+        font-size: 20px;
+        color: #c2185b;
+        margin-top: 15px;
+        height: 50px;
+        white-space: pre-line;
+    }
+
+    #finalMessage {
+        font-size: 24px;
+        color: #b30059;
+        margin-top: 20px;
+        display: none;
+        animation: fadeIn 2s ease-in-out forwards;
+    }
+
+    #yesButton {
+        display: none;
+        margin-top: 15px;
+        padding: 10px 25px;
+        font-size: 18px;
+        background-color: #ff4d88;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        animation: shake 1.2s infinite;
+    }
+
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        20% { transform: translateX(-4px); }
+        40% { transform: translateX(4px); }
+        60% { transform: translateX(-4px); }
+        80% { transform: translateX(4px); }
+        100% { transform: translateX(0); }
+    }
+
+    #hiddenLove {
+        font-size: 26px;
+        color: #ff0066;
+        margin-top: 20px;
+        display: none;
+        animation: fadeIn 3s ease-in-out forwards;
+    }
+
+    #signature {
+        margin-top: 25px;
+        font-size: 18px;
+        color: #cc0066;
+        display: none;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .heart {
+        position: absolute;
+        color: #ff4d88;
+        animation: float 5s linear infinite;
+        font-size: 20px;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(100vh); opacity: 1; }
+        100% { transform: translateY(-10vh); opacity: 0; }
+    }
+
+    #startButton {
+        margin-top: 15px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #ff4d88;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+</style>
+</head>
+
+<body>
+
+<h1>Janhvee, solve this little surprise 💕</h1>
+
+<button id="startButton">Tap here first 💖</button>
+
+<div id="puzzle"></div>
+<div id="message"></div>
+
+<div id="finalMessage">
+💖 Janhvee…<br><br>
+Will you be my Valentine? 💍💕<br>
+Meri Valentine banogi? 💖
+</div>
+
+<button id="yesButton">Haan 💖 / Yes 💕</button>
+
+<div id="hiddenLove">
+I love you forever, Janhvee ❤️
+</div>
+
+<div id="signature">
+Forever yours,<br>
+– Fattu 💕
+</div>
+
+<audio id="pianoMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b8cdb8a78.mp3?filename=romantic-piano-ambient-110624.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const puzzle = document.getElementById("puzzle");
+const message = document.getElementById("message");
+const finalMessage = document.getElementById("finalMessage");
+const yesButton = document.getElementById("yesButton");
+const hiddenLove = document.getElementById("hiddenLove");
+const signature = document.getElementById("signature");
+const music = document.getElementById("pianoMusic");
+const startButton = document.getElementById("startButton");
+
+let pieces = [];
+let order = [];
+
+for (let i = 0; i < 9; i++) {
+    pieces.push(i);
+}
+
+order = pieces.sort(() => Math.random() - 0.5);
+
+startButton.addEventListener("click", () => {
+    music.play();
+    startButton.style.display = "none";
+});
+
+function createPuzzle() {
+    puzzle.innerHTML = "";
+    order.forEach((num, index) => {
+        const piece = document.createElement("div");
+        piece.className = "piece";
+        piece.style.backgroundPosition = 
+            `${-(num % 3) * 100}px ${-Math.floor(num / 3) * 100}px`;
+
+        piece.addEventListener("click", () => {
+            message.innerText = 
+                "Janhvee, will you be my Valentine? 💕\nMeri Valentine banogi? 💖";
+
+            if (index < 8) {
+                [order[index], order[index + 1]] = 
+                [order[index + 1], order[index]];
+                createPuzzle();
+            }
+
+            checkWin();
+        });
+
+        puzzle.appendChild(piece);
+    });
+}
+
+function checkWin() {
+    if (order.every((val, i) => val === i)) {
+        finalMessage.style.display = "block";
+        yesButton.style.display = "inline-block";
+        createHearts();
+    }
+}
+
+yesButton.addEventListener("click", () => {
+    hiddenLove.style.display = "block";
+    signature.style.display = "block";
+    createHearts();
+});
+
+function createHearts() {
+    for (let i = 0; i < 30; i++) {
+        let heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+        document.body.appendChild(heart);
+    }
+}
+
+createPuzzle();
+</script>
+
+</body>
+</html>
